@@ -60,7 +60,6 @@ def update_category(form, thisuser, db):
 
     })
 
-   
     raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
 
 
