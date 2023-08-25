@@ -1,46 +1,46 @@
 import inspect
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from functions.customers import create_customer, update_customer, all_customers, one_customer
+from functions.questions import create_question, update_question, all_questions, one_question
 from routes.login import get_current_active_user
 from utils.role_verification import role_verification
-from schemes.customers import CustomerCreate, CustomerUpdate
+from schemes.questions import QuestionCreate, QuestionUpdate
 from database import database
 from schemes.users import UserCurrent
-customers_router = APIRouter(
-    prefix="/customers",
-    tags=["Customers operation"]
+questions_router = APIRouter(
+    prefix="/questions",
+    tags=["Users operation"]
 )
 
 
-@customers_router.post('/create', )
-def add_user(form: CustomerCreate, db: Session = Depends(database),
+@questions_router.post('/create', )
+def add_user(form: QuestionCreate, db: Session = Depends(database),
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_customer(form=form, db=db, thisuser=current_user)
+    create_question(form=form, db=db, thisuser=current_user)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 
-@customers_router.get('/')
-def get_customers(search: str = None,  id: int = 0,  page: int = 1,
-              limit: int = 25, status: bool = None, db: Session = Depends(database),
+@questions_router.get('/')
+def get_questions(search: str = None,  id: int = 0,category_id: int = 0,question_type_id: int = 0,  page: int = 1,
+              limit: int = 25,   db: Session = Depends(database),
               current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     if id:
-        return one_customer(db, id)
+        return one_question(db, id)
 
     else:
-        return all_customers(search=search, page=page, limit=limit, status=status, db=db, )
+        return all_questions(search=search, page=page, limit=limit,  db=db,category_id=category_id,question_type_id=question_type_id )
 
 
-@customers_router.put("/update")
-def customer_update(form: CustomerUpdate, db: Session = Depends(database),
+@questions_router.put("/update")
+def question_update(form: QuestionUpdate, db: Session = Depends(database),
                 current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    update_customer(form, current_user, db)
+    update_question(form, current_user, db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 

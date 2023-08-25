@@ -15,7 +15,7 @@ class Questions(Base):
     comment = Column(String(255), nullable=True)
     category_id = Column(Integer)
     step = Column(Integer, nullable=False)
-    question_type_id = Column(Integer)
+    question_type_id = Column(Integer,nullable=False)
     user_id = Column(Integer, nullable=False)
 
     user = relationship('Users', foreign_keys=[user_id],

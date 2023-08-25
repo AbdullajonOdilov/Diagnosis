@@ -1,10 +1,11 @@
 from pydantic import BaseModel
 
 
+
 class QuestionStateOptionCreate(BaseModel):
     question_state_id: int
     question_id: int
-    answer: text
+    answer: str
     comment: str
 
 

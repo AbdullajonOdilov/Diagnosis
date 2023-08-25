@@ -1,7 +1,7 @@
 from sqlalchemy.orm import relationship
 
 from database import Base
-from sqlalchemy import Column, Integer, and_, Boolean, Date
+from sqlalchemy import Column, Integer, and_, Boolean, Date, func
 
 from models.categories import Categories
 from models.customers import Customers
@@ -14,8 +14,8 @@ class Diagnostics(Base):
     customer_id = Column(Integer, nullable=False)
     category_id = Column(Integer, nullable=False)
     user_id = Column(Integer, nullable=False)
-    status = Column(Boolean)
-    date = Column(Date)
+    status = Column(Boolean,nullable=False,default=True)
+    date = Column(Date,nullable=False,default=func.now())
 
     user = relationship('Users', foreign_keys=[user_id],
                         primaryjoin=lambda: and_(Users.id == Diagnostics.user_id))
