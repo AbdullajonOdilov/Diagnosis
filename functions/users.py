@@ -31,9 +31,8 @@ def create_user(form, db, thisuser):
     new_user_db = Users(
         name=form.name,
         username=form.username,
-        salary=form.salary,
-        balance=form.balance,
         role=form.role,
+        status=form.status,
         password_hash=get_password_hash(form.password_hash))
     db.add(new_user_db)
     db.flush()
@@ -80,3 +79,7 @@ def update_user(form, thisuser, db):
     raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
 
 
+def delete_user(id, db):
+    the_one(id, Users, db)
+    db.query(Users).filter(Users.id == id).delete()
+    db.commit()
