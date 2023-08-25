@@ -14,7 +14,7 @@ def all_customers(search, page, limit, db):
                                             joinedload(Customers.user))
     if search:
         search_formatted = "%{}%".format(search)
-        customers = customers.filter(Customers.name.like(search_formatted) | Customers.comment.like(search_formatted))
+        customers = customers.filter(Customers.name.ilike(search_formatted) | Customers.comment.ilike(search_formatted))
     else:
         customers = customers.filter(Customers.id > 0)
 
@@ -27,7 +27,7 @@ def create_customer(form, thisuser,  db):
         name=form.name,
         address=form.address,
         comment=form.comment,
-        user_id=form.thisuser.id
+        user_id=thisuser.id
     )
     db.add(new_customer_db)
     db.flush()
@@ -45,7 +45,7 @@ def one_customer(db, ident):
         joinedload(Customers.user)).filter(Customers.id == ident).first()
     if the_item:
         return the_item
-    raise HTTPException(status_code=400, detail="bunday user mavjud emas")
+    raise HTTPException(status_code=400, detail="bunday customer mavjud emas")
 
 
 def update_customer(form, thisuser, db):
