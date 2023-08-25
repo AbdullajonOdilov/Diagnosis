@@ -7,9 +7,11 @@ class CategoryCreate(BaseModel):
     source_id: int
 
 
-class CustomerUpdate(BaseModel):
+class CategoryUpdate(BaseModel):
     id: int
     name: str
     comment: str
     source_id: int
+    status: bool
+
 

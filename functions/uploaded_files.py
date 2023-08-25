@@ -12,7 +12,7 @@ from utils.pagination import pagination
 
 def all_uploaded_files(search, source, page, limit, db):
     uploaded = db.query(Uploaded_files).options(joinedload(Uploaded_files.user),
-                                          joinedload(Uploaded_files.category).load_only(Categories.name))
+                                          joinedload(Uploaded_files.category_source).load_only(Categories.name))
     if source:
         uploaded = uploaded.filter(Uploaded_files.source == source)
     if search:
@@ -32,30 +32,31 @@ def one_file(ident, db):
     return the_item
 
 
-def create_file(new_file, source, source_id, comment, thisuser, db):
-    if source not in ['category']:
-        raise HTTPException(status_code=400, detail="Source error")
-    the_one(db, Categories, source_id)
-    if db.query(Uploaded_files).filter(Uploaded_files.source == source,
-                                       Uploaded_files.source_id == source_id).first():
-        raise HTTPException(status_code=400, detail="This source already have his own file!")
-    if db.query(Categories).filter(Categories.id == source_id).first() and source == "category":
-        file_location = new_file.filename
-        ext = os.path.splitext(file_location)[-1].lower()
-        if ext not in [".jpg", ".png", ".mp3", ".mp4", ".gif", ".jpeg"]:
-            raise HTTPException(status_code=400, detail="Yuklanayotgan fayl formati mos kelmaydi!")
-        with open(f"Uploaded_files/{new_file.filename}", "wb+") as file_object:
-            file_object.write(new_file.file.read())
-        new_file_db = Uploaded_files(
-            file=new_file.filename,
-            source=source,
-            source_id=source_id,
-            comment=comment,
-            user_id=thisuser.id,
-        )
-        save_in_db(db, new_file_db)
-    else:
-        raise HTTPException(status_code=400, detail="source va source_id bir-biriga mos kelmadi!")
+def create_file(new_files, sources, source_ids, comments, thisuser, db):
+    for new_file, source, source_id, comment in zip(new_files, sources, source_ids, comments):
+        if source not in ['category']:
+            raise HTTPException(status_code=400, detail="Source error")
+        the_one(db, Categories, source_id)
+        if db.query(Uploaded_files).filter(Uploaded_files.source == source,
+                                           Uploaded_files.source_id == source_id).first():
+            raise HTTPException(status_code=400, detail="This source already have his own file!")
+        if db.query(Categories).filter(Categories.id == source_id).first() and source == "category":
+            file_location = new_file.filename
+            ext = os.path.splitext(file_location)[-1].lower()
+            if ext not in [".jpg", ".png", ".mp3", ".mp4", ".gif", ".jpeg"]:
+                raise HTTPException(status_code=400, detail="Yuklanayotgan fayl formati mos kelmaydi!")
+            with open(f"Uploaded_files/{new_file.filename}", "wb+") as file_object:
+                file_object.write(new_file.file.read())
+            new_file_db = Uploaded_files(
+                file=new_file.filename,
+                source=source,
+                source_id=source_id,
+                comment=comment,
+                user_id=thisuser.id,
+            )
+            save_in_db(db, new_file_db)
+        else:
+            raise HTTPException(status_code=400, detail="source va source_id bir-biriga mos kelmadi!")
 
 
 def update_file(id, new_file, source, source_id, comment, this_user, db):
