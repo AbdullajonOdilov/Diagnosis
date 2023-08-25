@@ -32,7 +32,7 @@ def get_customers(search: str = None,  id: int = 0,  page: int = 1,
         return one_customer(db, id)
 
     else:
-        return all_customers(search=search, page=page, limit=limit, status=status, db=db, )
+        return all_customers(search=search, page=page, limit=limit, status=status, db=db)
 
 
 @customers_router.put("/update")
