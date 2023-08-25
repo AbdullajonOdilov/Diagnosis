@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from db import Base,database
+from database import Base, database
 
 
 def get_in_db(

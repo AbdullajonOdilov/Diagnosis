@@ -9,7 +9,7 @@ from database import database
 from schemes.users import UserCurrent
 questions_router = APIRouter(
     prefix="/questions",
-    tags=["Users operation"]
+    tags=["Question operation"]
 )
 
 

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from routes import login, users, uploaded_files,categories,questions,question_types,question_states,\
+from routes import login, users, uploaded_files, categories, questions, question_types,question_states,\
     question_state_answers,question_state_options,diagnostic_options,diagnostics
 
 app = FastAPI()
@@ -12,6 +12,7 @@ def home():
 app.include_router(login.login_router)
 app.include_router(users.users_router)
 app.include_router(categories.categories_router)
+
 app.include_router(questions.questions_router)
 app.include_router(question_types.question_types_router)
 app.include_router(question_states.question_states_router)

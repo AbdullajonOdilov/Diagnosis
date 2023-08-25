@@ -9,7 +9,7 @@ from database import database
 from schemes.users import UserCurrent
 diagnostic_options_router = APIRouter(
     prefix="/diagnostic_options",
-    tags=["Categories operation"]
+    tags=["Diagnostic operation"]
 )
 
 

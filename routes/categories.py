@@ -9,7 +9,7 @@ from database import database
 from schemes.users import UserCurrent
 categories_router = APIRouter(
     prefix="/categories",
-    tags=["Users operation"]
+    tags=["Categories operation"]
 )
 
 

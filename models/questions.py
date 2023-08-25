@@ -20,7 +20,7 @@ class Questions(Base):
 
     user = relationship('Users', foreign_keys=[user_id],
                         primaryjoin=lambda: and_(Users.id == Questions.user_id))
-    category = relationship('Categories', foreign_keys=[user_id],
-                        primaryjoin=lambda: and_(Categories.id == Questions.category_id))
+    category = relationship('Categories', foreign_keys=[category_id],
+                            primaryjoin=lambda: and_(Categories.id == Questions.category_id))
     question_type = relationship('Question_types', foreign_keys=[question_type_id],
                                  primaryjoin=lambda: and_(Question_types.id == Questions.question_type_id))

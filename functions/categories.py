@@ -1,9 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 
- 
- 
-from routes.login import get_password_hash
 from utils.db_operations import save_in_db, the_one, the_one_username
 from utils.pagination import pagination
 from models.categories import Categories

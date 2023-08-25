@@ -65,6 +65,7 @@ def get_current_user(db: Session = Depends(database), token: str = Depends(oauth
 async def get_current_active_user(current_user: CreateUser = Depends(get_current_user)):
     return current_user
 
+
 @login_router.post("/token")
 async def login_for_access_token(db: Session = Depends(database), form_data: OAuth2PasswordRequestForm = Depends()):
     user = db.query(Users).where(Users.username == form_data.username).first()

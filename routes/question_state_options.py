@@ -9,7 +9,7 @@ from database import database
 from schemes.users import UserCurrent
 question_state_options_router = APIRouter(
     prefix="/question_state_options",
-    tags=["Users operation"]
+    tags=["Question state operation"]
 )
 
 
