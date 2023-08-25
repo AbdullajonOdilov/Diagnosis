@@ -1,18 +1,21 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 
+from models.categories import Categories
+from models.question_types import Question_types
 from utils.db_operations import save_in_db, the_one
 from utils.pagination import pagination
 from models.questions import Questions
 
 
 def all_questions(search, category_id, question_type_id, page, limit, db):
-    questions = db.query(Questions).options(joinedload(Questions.user), joinedload(Questions.category), joinedload(Questions.question_type))
+    questions = db.query(Questions).options(joinedload(Questions.user),
+                                            joinedload(Questions.category),
+                                            joinedload(Questions.question_type))
     if search:
         search_formatted = "%{}%".format(search)
         questions = questions.filter(
-            Questions.name.like(search_formatted) | Questions.comment.like(search_formatted)
-            |Questions.step.like(search_formatted))
+            Questions.name.like(search_formatted) | Questions.comment.like(search_formatted))
     else:
         questions = questions.filter(Questions.id > 0)
     
@@ -31,6 +34,8 @@ def all_questions(search, category_id, question_type_id, page, limit, db):
 
 
 def create_question(form, db, thisuser):
+    the_one(db, Categories, db)
+    the_one(db, Question_types, db)
     new_question_db = Questions(
         name=form.name,
         comment=form.comment,
@@ -39,11 +44,7 @@ def create_question(form, db, thisuser):
         step=form.step,
         user_id=thisuser.id,
     )
-
-    save_in_db(db=Questions, obj=new_question_db)
-
-    raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
-
+    save_in_db(db, new_question_db)
 
 def one_question(db, id):
     the_item = db.query(Questions).options(
@@ -55,7 +56,8 @@ def one_question(db, id):
 
 def update_question(form, thisuser, db):
     the_one(db=db, model=Questions, id=form.id)
-
+    the_one(db, Categories, db)
+    the_one(db, Question_types, db)
     db.query(Questions).filter(Questions.id == form.id).update({
         Questions.name: form.name,
         Questions.comment: form.comment,
@@ -65,7 +67,4 @@ def update_question(form, thisuser, db):
         Questions.user_id: thisuser.id,
 
     })
-
-    raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
-
-
+    db.commit()

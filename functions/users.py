@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload
 from functions.phones import create_phone, delete_phone
 from models.phones import Phones
 from routes.login import get_password_hash
-from utils.db_operations import save_in_db, the_one, the_one_username
+from utils.db_operations import the_one, the_one_username
 from utils.pagination import pagination
 from models.users import Users
 

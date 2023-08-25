@@ -32,9 +32,7 @@ def create_category(form, db, thisuser):
         user_id=thisuser.id,
         )
 
-    save_in_db(db=Categories,obj=new_category_db)
-    
-    raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
+    save_in_db(db, new_category_db)
 
 
 def one_category(db, id):
@@ -54,9 +52,6 @@ def update_category(form, thisuser, db):
         Categories.source_id: form.source_id,
         Categories.status: form.status,
         Categories.user_id: thisuser.id,
-
     })
-
-    raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
-
+    db.commit()
 

@@ -1,17 +1,18 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 
+from models.question_states import Question_states
+from models.questions import Questions
 from utils.db_operations import save_in_db, the_one
 from utils.pagination import pagination
 from models.question_state_options import Question_state_options
 
 
-def all_question_state_options(search, question_state_id,question_id, page, limit, db):
-    question_state_options = db.query(Question_state_options).options(joinedload(Question_state_options.user),
-                                                                      joinedload(
-                                                                          Question_state_options.question_state_option, ),
+def all_question_state_options(search, question_state_id, question_id, page, limit, db):
+    question_state_options = db.query(Question_state_options).options(
+        joinedload(Question_state_options.user),
+        joinedload(Question_state_options.question_state_option))
 
-                                                                      )
     if search:
         search_formatted = "%{}%".format(search)
         question_state_options = question_state_options.filter(
@@ -39,6 +40,8 @@ def all_question_state_options(search, question_state_id,question_id, page, limi
 
 
 def create_question_state_option(form, db, thisuser):
+    the_one(db, Question_states, form.question_state_id)
+    the_one(db, Questions, form.question_id)
     new_question_state_db = Question_state_options(
         question_state_id=form.question_state_id,
         answer=form.answer,
@@ -46,17 +49,13 @@ def create_question_state_option(form, db, thisuser):
         question_id=form.question_id,
         user_id=thisuser.id,
     )
-
-    save_in_db(db=Question_state_options, obj=new_question_state_db)
-
-    raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
+    save_in_db(db, new_question_state_db)
 
 
 def one_question_state_option(db, id):
     the_item = db.query(Question_state_options).options(joinedload(Question_state_options.user),
-                                                        joinedload(Question_state_options.question, ),
-                                                        ).filter(
-        Question_state_options.id == id).first()
+                                                        joinedload(Question_state_options.question),
+                                                        ).filter(Question_state_options.id == id).first()
     if the_item:
         return the_item
     raise HTTPException(status_code=400, detail="Bunday question_state mavjud emas")
@@ -64,16 +63,15 @@ def one_question_state_option(db, id):
 
 def update_question_state_option(form, thisuser, db):
     the_one(db=db, model=Question_state_options, id=form.id)
-
+    the_one(db, Question_states, form.question_state_id)
+    the_one(db, Questions, form.question_id)
     db.query(Question_state_options).filter(Question_state_options.id == form.id).update({
         Question_state_options.question_state_id: form.question_state_id,
         Question_state_options.answer: form.answer,
         Question_state_options.comment: form.comment,
         Question_state_options.question_id: form.question_id,
         Question_state_options.user_id: thisuser.id,
-
     })
-
-    raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
+    db.commit()
 
 

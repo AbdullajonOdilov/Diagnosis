@@ -54,6 +54,7 @@ def update_customer(form, thisuser, db):
         Customers.name: form.name,
         Customers.address: form.address,
         Customers.comment: form.comment,
+        Customers.user_id: thisuser.id
     })
 
     customer_phones = db.query(Phones).filter(Phones.source_id == customer.id).all()

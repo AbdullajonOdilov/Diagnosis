@@ -32,12 +32,13 @@ def get_diagnostic_options(diagnostic_id: int = 0,question_state_option_id: int 
         return one_diagnostic_option(db, id)
 
     else:
-        return all_diagnostic_options(diagnostic_id=diagnostic_id,question_state_option_id=question_state_option_id,  page=page, limit=limit, status=status, db=db, )
+        return all_diagnostic_options(diagnostic_id=diagnostic_id, question_state_option_id=question_state_option_id,
+                                      page=page, limit=limit, status=status, db=db, )
 
 
 @diagnostic_options_router.put("/update")
 def category_update(form: DiagnosticOptionUpdate, db: Session = Depends(database),
-                current_user: UserCurrent = Depends(get_current_active_user)):
+                    current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     update_diagnostic_option(form, current_user, db)

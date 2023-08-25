@@ -27,9 +27,7 @@ def create_question_state(form, db, thisuser):
         user_id=thisuser.id,
     )
 
-    save_in_db(db=Question_states, obj=new_question_state_db)
-
-    raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
+    save_in_db(db, new_question_state_db)
 
 
 def one_question_state(db, id):
@@ -47,9 +45,5 @@ def update_question_state(form, thisuser, db):
         Question_states.name: form.name,
         Question_states.comment: form.comment,
         Question_states.user_id: thisuser.id,
-
     })
-
-    raise HTTPException(status_code=200, detail=f"Amaliyot muvaffaqiyatli bajarildi")
-
-
+    db.commit()
