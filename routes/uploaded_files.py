@@ -28,14 +28,28 @@ def get_files(search: str = None, id: int = 0, source: str = None, page: int = 1
     return all_uploaded_files(search, source, page, limit, db)
 
 
+# @uploaded_files_router.post("/create")
+# def file_create(new_files: list[UploadFile], sources: list[str],
+#                 source_ids: list[str], comments: list[str],
+#                 db: Session = Depends(database),
+#                 current_user: CreateUser = Depends(get_current_active_user)):
+#     role_verification(current_user, inspect.currentframe().f_code.co_name)
+#     return create_file(new_files, sources, source_ids, comments, current_user, db)
+#     # raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
+
+
 @uploaded_files_router.post("/create")
-def file_create(new_files: list[UploadFile], sources: list[str],
-                source_ids: list[int], comments: list[str],
-                db: Session = Depends(database),
-                current_user: CreateUser = Depends(get_current_active_user)):
+async def upload_files_with_db(
+    new_files: List[UploadFile] = File(...),
+    source: str = Form(...),
+    source_id: int = Form(...),
+    comment: str = Form(...),
+    db: Session = Depends(database),
+    current_user: CreateUser = Depends(get_current_active_user)
+):
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_file(new_files, sources, source_ids, comments, current_user, db)
-    raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
+    create_file(new_files, source, source_id, comment, current_user, db)
+    return {"message": f"{len(new_files)} files uploaded and saved in the database"}
 
 
 @uploaded_files_router.put("/update")
