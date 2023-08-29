@@ -14,4 +14,6 @@ class CategoryUpdate(BaseModel):
     status: bool
     comment: str
     source_id: int
+    status: bool
+
 
