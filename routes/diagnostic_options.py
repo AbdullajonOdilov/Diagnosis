@@ -14,11 +14,11 @@ diagnostic_options_router = APIRouter(
 
 
 @diagnostic_options_router.post('/create', )
-def add_user(form: DiagnosticOptionCreate, db: Session = Depends(database),
+def add_diagnostic_options(form: DiagnosticOptionCreate, db: Session = Depends(database),
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_diagnostic_option(form=form, db=db, thisuser=current_user)
+    create_diagnostic_option(form=form, thisuser=current_user, db=db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 
@@ -37,7 +37,7 @@ def get_diagnostic_options(diagnostic_id: int = 0,question_state_option_id: int 
 
 
 @diagnostic_options_router.put("/update")
-def category_update(form: DiagnosticOptionUpdate, db: Session = Depends(database),
+def diagnostic_optionsupdate(form: DiagnosticOptionUpdate, db: Session = Depends(database),
                     current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)

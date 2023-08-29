@@ -39,7 +39,7 @@ def all_question_state_options(search, question_state_id, question_id, page, lim
     return pagination(question_state_options, page, limit)
 
 
-def create_question_state_option(form, db, thisuser):
+def create_question_state_option(form, thisuser, db):
     the_one(db, Question_states, form.question_state_id)
     the_one(db, Questions, form.question_id)
     new_question_state_db = Question_state_options(

@@ -32,7 +32,7 @@ def create_user(form, db, thisuser):
         name=form.name,
         username=form.username,
         role=form.role,
-        status=form.status,
+        status=True,
         password_hash=get_password_hash(form.password_hash))
     db.add(new_user_db)
     db.flush()

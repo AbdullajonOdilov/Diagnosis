@@ -14,11 +14,11 @@ diagnostics_router = APIRouter(
 
 
 @diagnostics_router.post('/create', )
-def add_user(form: DiagnosticCreate, db: Session = Depends(database),
+def add_diagnosis(form: DiagnosticCreate, db: Session = Depends(database),
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_diagnostics(form=form, db=db, thisuser=current_user)
+    create_diagnostics(form=form, thisuser=current_user, db=db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 
@@ -32,11 +32,12 @@ def get_diagnostics(customer_id: int = 0, category_id: int = 0, id: int = 0,  pa
         return one_diagnostics(db, id)
 
     else:
-        return all_diagnostics(category_id=category_id,customer_id=customer_id, page=page, limit=limit, status=status, db=db, )
+        return all_diagnostics(category_id=category_id, customer_id=customer_id, page=page,
+                               limit=limit, status=status, db=db, )
 
 
 @diagnostics_router.put("/update")
-def question_state_update(form: DiagnosticUpdate, db: Session = Depends(database),
+def diagnosis_update(form: DiagnosticUpdate, db: Session = Depends(database),
                 current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)

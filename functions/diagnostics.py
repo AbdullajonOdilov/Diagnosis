@@ -32,7 +32,7 @@ def all_diagnostics(customer_id, category_id, status, page, limit, db):
     return pagination(diagnostics, page, limit)
 
 
-def create_diagnostics(form, db, thisuser):
+def create_diagnostics(form, thisuser, db):
     the_one(db, Customers, form.customer_id)
     the_one(db, Categories, form.category_id)
     new_diagnostics_db = Diagnostics(

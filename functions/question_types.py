@@ -35,11 +35,12 @@ def one_question_type(db, ident):
     raise HTTPException(status_code=400, detail="bunday ma'lumot mavjud emas")
 
 
-def update_question_type(form, db):
+def update_question_type(form, thisuser, db):
     the_one(db=db, model=Question_types, id=form.id)
     db.query(Question_types).filter(Question_types.id == form.id).update({
         Question_types.name: form.name,
         Question_types.comment: form.comment,
+        Question_types.user_id: thisuser.id
     })
     db.commit()
 

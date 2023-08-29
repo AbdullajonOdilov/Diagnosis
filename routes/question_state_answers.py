@@ -14,11 +14,11 @@ question_state_answers_router = APIRouter(
 
 
 @question_state_answers_router.post('/create', )
-def add_user(form: QuestionStateAnswerCreate, db: Session = Depends(database),
+def add_question_state_answer(form: QuestionStateAnswerCreate, db: Session = Depends(database),
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_question_state_answer(form=form, db=db, thisuser=current_user)
+    create_question_state_answer(form=form, thisuser=current_user, db=db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 
@@ -36,7 +36,7 @@ def get_question_state_answers(search: str = None,  id: int = 0,  page: int = 1,
 
 
 @question_state_answers_router.put("/update")
-def category_update(form: QuestionStateAnswerUpdate, db: Session = Depends(database),
+def question_state_answers_update(form: QuestionStateAnswerUpdate, db: Session = Depends(database),
                 current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)

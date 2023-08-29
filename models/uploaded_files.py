@@ -1,4 +1,8 @@
-from sqlalchemy import *
+import json
+
+from sqlalchemy import Column, Integer, String, and_
+from sqlalchemy.dialects.postgresql import JSONB
+
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -9,7 +13,7 @@ from models.users import Users
 class Uploaded_files(Base):
     __tablename__ = "uploaded_files"
     id = Column(Integer, autoincrement=True, primary_key=True)
-    file = Column(String(255))
+    file = Column(JSONB)   # Change the column type to String to store JSON
     source = Column(String(255))
     source_id = Column(Integer)
     comment = Column(String(255))
@@ -20,4 +24,3 @@ class Uploaded_files(Base):
 
     category_source = relationship('Categories', foreign_keys=[source_id],
                                    primaryjoin=lambda: and_(Categories.id == Uploaded_files.source_id))
-

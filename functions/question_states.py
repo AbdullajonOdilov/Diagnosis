@@ -19,7 +19,7 @@ def all_question_states(search, page, limit,  db):
     return pagination(question_states, page, limit)
 
 
-def create_question_state(form, db, thisuser):
+def create_question_state(form, thisuser,  db):
 
     new_question_state_db = Question_states(
         name=form.name,

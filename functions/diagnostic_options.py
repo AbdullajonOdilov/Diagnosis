@@ -33,7 +33,7 @@ def all_diagnostic_options(diagnostic_id, question_state_option_id, status, page
     return pagination(diagnostic_options, page, limit)
 
 
-def create_diagnostic_option(form, db, thisuser):
+def create_diagnostic_option(form, thisuser, db):
     the_one(db, Diagnostics, form.diagnostic_id)
     the_one(db, Question_state_options, form.question_state_option_id)
     new_diagnostic_option_db = Diagnostic_options(

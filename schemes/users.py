@@ -8,7 +8,6 @@ class CreateUser(BaseModel):
     username: str
     password_hash: str
     role: str
-    status: bool
     phones: List[CreatePhone]
 
 

@@ -1,11 +1,14 @@
 import inspect
+import os
+import shutil
 from typing import List
 
 from fastapi import APIRouter, Depends, UploadFile, Form, File, HTTPException
+
 from sqlalchemy.orm import Session
 
 from database import database
-from functions.uploaded_files import one_file, all_uploaded_files, create_file, update_file
+from functions.uploaded_files import one_file, all_uploaded_files, update_file, create_file
 from routes.login import get_current_active_user
 from schemes.users import CreateUser
 from utils.role_verification import role_verification
@@ -29,14 +32,20 @@ def get_files(search: str = None, id: int = 0, source: str = None, page: int = 1
 
 
 @uploaded_files_router.post("/create")
-def file_create(new_file: UploadFile = File(None), source: str = Form(None),
-                source_id: int = Form(0), comment: str = Form(None),
-                db: Session = Depends(database),
-                current_user: CreateUser = Depends(get_current_active_user)):
+def upload_files(
+        new_files: List[UploadFile] = File(...),
+        source: str = Form(...),
+        source_id: int = Form(...),
+        comment: str = Form(None),
+        db: Session = Depends(database),
+        current_user: CreateUser = Depends(get_current_active_user)
+        ):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_file(new_file, source, source_id, comment, current_user, db)
-    raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
+    create_file(new_files, source, source_id, comment, current_user, db)
+    return {"message": f"{len(new_files)} fayl bazaga saqlandi"}
+
+
 
 
 @uploaded_files_router.put("/update")
@@ -58,7 +67,3 @@ def file_update(
 #     role_verification(user=current_user)
 #     delete_file_e(id, db)
 #     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
-
-
-
-

@@ -13,7 +13,7 @@ class Categories(Base):
     comment = Column(String(255), nullable=False)
     source_id = Column(Integer, nullable=False)
     user_id = Column(Integer, nullable=False)
-    status = Column(Boolean, nullable=True,default=True)
+    status = Column(Boolean, nullable=True, default=True)
 
     user = relationship('Users', foreign_keys=[user_id],
                         primaryjoin=lambda: and_(Users.id == Categories.user_id))

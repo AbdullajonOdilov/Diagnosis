@@ -1,10 +1,16 @@
 from fastapi import FastAPI
-
+from fastapi.openapi.models import Info
 from routes import login, users, uploaded_files, categories, questions, question_types,question_states,\
     question_state_answers,question_state_options,diagnostic_options,diagnostics
 
-app = FastAPI()
-
+app = FastAPI(
+    title="Diagnostika",
+    version="0.1.0",
+    openapi_info=Info(
+        title="Diagnostika",
+        version="2.1.0"
+    )
+)
 @app.get('/')
 def home():
     return {"message": "Welcome"}

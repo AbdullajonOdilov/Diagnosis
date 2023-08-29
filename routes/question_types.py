@@ -14,11 +14,11 @@ question_types_router = APIRouter(
 
 
 @question_types_router.post('/create', )
-def add_user(form: QuestionTypeCreate, db: Session = Depends(database),
+def add_question_type(form: QuestionTypeCreate, db: Session = Depends(database),
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_question_type(form=form, db=db, thisuser=current_user)
+    create_question_type(form=form, thisuser=current_user,  db=db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 

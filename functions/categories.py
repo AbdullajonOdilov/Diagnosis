@@ -23,7 +23,7 @@ def all_categories(search, page, limit, status, db):
     return pagination(categories, page, limit)
 
 
-def create_category(form, db, thisuser):
+def create_category(form, thisuser, db):
 
     new_category_db = Categories(
         name=form.name,
@@ -55,3 +55,8 @@ def update_category(form, thisuser, db):
     })
     db.commit()
 
+
+def delete_category(id, db):
+    the_one(id, Categories, db)
+    db.query(Categories).filter(Categories.id == id).delete()
+    db.commit()

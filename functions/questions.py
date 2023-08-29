@@ -33,7 +33,7 @@ def all_questions(search, category_id, question_type_id, page, limit, db):
     return pagination(questions, page, limit)
 
 
-def create_question(form, db, thisuser):
+def create_question(form, thisuser, db):
     the_one(db, Categories, db)
     the_one(db, Question_types, db)
     new_question_db = Questions(
