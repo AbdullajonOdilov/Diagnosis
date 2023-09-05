@@ -15,18 +15,10 @@ def all_diagnostics(customer_id, category_id, status, page, limit, db):
 
     if customer_id:
         diagnostics = diagnostics.filter(Diagnostics.customer_id == customer_id)
-
-    else:
-        diagnostics = diagnostics
     if category_id:
         diagnostics = diagnostics.filter(Diagnostics.category_id == category_id)
-    else:
-        diagnostics = diagnostics
-
     if status in [True, False]:
         diagnostics = diagnostics.filter(Diagnostics.status == status)
-    else:
-        diagnostics = diagnostics
 
     diagnostics = diagnostics.order_by(Diagnostics.id.desc())
     return pagination(diagnostics, page, limit)

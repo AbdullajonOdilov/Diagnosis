@@ -1,10 +1,12 @@
 import inspect
+from typing import List
+
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from functions.questions import create_question, update_question, all_questions, one_question
 from routes.login import get_current_active_user
 from utils.role_verification import role_verification
-from schemes.questions import QuestionCreate, QuestionUpdate
+from schemes.questions import QuestionCreate, QuestionUpdate, QuestionData
 from database import database
 from schemes.users import UserCurrent
 questions_router = APIRouter(
@@ -23,7 +25,8 @@ def add_question(form: QuestionCreate, db: Session = Depends(database),
 
 
 @questions_router.get('/')
-def get_questions(search: str = None,  id: int = 0, category_id: int = 0, question_type_id: int = 0,  page: int = 1,
+def get_questions(search: str = None,  id: int = 0, category_id: int = 0,
+                  question_type_id: int = 0,  page: int = 1,
               limit: int = 25,   db: Session = Depends(database),
               current_user: UserCurrent = Depends(get_current_active_user)):
 

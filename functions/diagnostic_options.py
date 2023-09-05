@@ -16,18 +16,12 @@ def all_diagnostic_options(diagnostic_id, question_state_option_id, status, page
     if diagnostic_id:
         diagnostic_options = diagnostic_options.filter(Diagnostic_options.diagnostic_id == diagnostic_id)
 
-    else:
-        diagnostic_options = diagnostic_options
     if question_state_option_id:
         diagnostic_options = diagnostic_options.\
             filter(Diagnostic_options.question_state_option_id == question_state_option_id)
-    else:
-        diagnostic_options = diagnostic_options
 
     if status in [True, False]:
         diagnostic_options = diagnostic_options.filter(Diagnostic_options.status == status)
-    else:
-        diagnostic_options = diagnostic_options
 
     diagnostic_options = diagnostic_options.order_by(Diagnostic_options.id.desc())
     return pagination(diagnostic_options, page, limit)

@@ -11,29 +11,21 @@ from models.question_state_options import Question_state_options
 def all_question_state_options(search, question_state_id, question_id, page, limit, db):
     question_state_options = db.query(Question_state_options).options(
         joinedload(Question_state_options.user),
-        joinedload(Question_state_options.question_state_option))
+        joinedload(Question_state_options.question_state))
 
     if search:
         search_formatted = "%{}%".format(search)
         question_state_options = question_state_options.filter(
             Question_state_options.answer.like(search_formatted) | Question_state_options.comment.like(
                 search_formatted))
-    else:
-        question_state_options = question_state_options.filter(Question_state_options.id > 0)
 
     if question_id:
         question_state_options = question_state_options.filter(
             Question_state_options.question_id == question_id)
 
-    else:
-        question_state_options = question_state_options
-
     if question_state_id:
         question_state_options = question_state_options.filter(
             Question_state_options.question_state_id == question_state_id)
-
-    else:
-        question_state_options = question_state_options
 
     question_state_options = question_state_options.order_by(Question_state_options.id.desc())
     return pagination(question_state_options, page, limit)
@@ -58,7 +50,7 @@ def one_question_state_option(db, id):
                                                         ).filter(Question_state_options.id == id).first()
     if the_item:
         return the_item
-    raise HTTPException(status_code=400, detail="Bunday question_state mavjud emas")
+    raise HTTPException(status_code=400, detail="Bunday question_state_option mavjud emas")
 
 
 def update_question_state_option(form, thisuser, db):

@@ -23,7 +23,7 @@ def add_user(form: CreateUser, db: Session = Depends(database),
 
 
 @users_router.get('/')
-def get_users(search: str = None,  id: int = 0,  page: int = 1,
+def get_users(search: str = None, role: str = None, id: int = 0,  page: int = 1,
               limit: int = 25, status: bool = None, db: Session = Depends(database),
               current_user: UserCurrent = Depends(get_current_active_user)):
 
@@ -31,8 +31,7 @@ def get_users(search: str = None,  id: int = 0,  page: int = 1,
     if id:
         return one_user(db, id)
 
-    else:
-        return all_users(search=search, page=page, limit=limit, status=status, db=db, )
+    return all_users(search=search,role=role, page=page, limit=limit, status=status, db=db)
 
 
 @users_router.put("/update")

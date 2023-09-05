@@ -30,7 +30,7 @@ def save_in_db(
 def the_one(db, model, id):
     the_one = db.query(model).filter(model.id == id).first()
     if not the_one:
-        raise HTTPException(status_code=400, detail=f"Bazada bunday {id} li malumot yo'q!")
+        raise HTTPException(status_code=400, detail=f"Bazada bunday {model} malumot yo'q!")
     return the_one
 
 

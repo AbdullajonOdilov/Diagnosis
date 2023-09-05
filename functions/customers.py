@@ -9,21 +9,21 @@ from utils.pagination import pagination
 from models.users import Users
 
 
-def all_customers(search, page, limit, db):
+def all_customers(status, search, page, limit, db):
     customers = db.query(Customers).options(joinedload(Customers.customer_phones),
                                             joinedload(Customers.user))
     if search:
         search_formatted = "%{}%".format(search)
         customers = customers.filter(Customers.name.ilike(search_formatted) | Customers.comment.ilike(search_formatted))
-    else:
-        customers = customers.filter(Customers.id > 0)
 
+    if status in [True, False]:
+        customers = customers.filter(Customers.status == status)
     customers = customers.order_by(Customers.id.desc())
     return pagination(customers, page, limit)
 
 
 def create_customer(form, thisuser,  db):
-    new_customer_db = Users(
+    new_customer_db = Customers(
         name=form.name,
         address=form.address,
         comment=form.comment,

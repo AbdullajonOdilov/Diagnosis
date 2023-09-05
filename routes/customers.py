@@ -14,25 +14,24 @@ customers_router = APIRouter(
 
 
 @customers_router.post('/create', )
-def add_user(form: CustomerCreate, db: Session = Depends(database),
+def add_customer(form: CustomerCreate, db: Session = Depends(database),
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_customer(form=form, db=db, thisuser=current_user)
+    create_customer(form, current_user, db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 
 @customers_router.get('/')
-def get_customers(search: str = None,  id: int = 0,  page: int = 1,
-                  limit: int = 25, status: bool = None, db: Session = Depends(database),
+def get_customers(search: str = None, status: str = None, id: int = 0,  page: int = 1,
+                  limit: int = 25, db: Session = Depends(database),
                   current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     if id:
         return one_customer(db, id)
 
-    else:
-        return all_customers(search=search, page=page, limit=limit, status=status, db=db)
+    return all_customers(status=status, search=search, page=page, limit=limit, db=db)
 
 
 @customers_router.put("/update")

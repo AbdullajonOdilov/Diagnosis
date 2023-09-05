@@ -10,9 +10,8 @@ def all_question_types(search, page, limit, db):
     question_types = db.query(Question_types).options(joinedload(Question_types.user))
     if search:
         search_formatted = "%{}%".format(search)
-        question_types = question_types.filter(Question_types.name.ilike(search_formatted) | Question_types.comment.ilike(search_formatted))
-    else:
-        question_types = question_types.filter(Question_types.id > 0)
+        question_types = question_types.filter(Question_types.name.ilike(search_formatted)
+                                               | Question_types.comment.ilike(search_formatted))
 
     question_types = question_types.order_by(Question_types.id.desc())
     return pagination(question_types, page, limit)

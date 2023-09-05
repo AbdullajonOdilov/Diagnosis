@@ -7,18 +7,15 @@ from models.categories import Categories
 
 
 def all_categories(search, page, limit, status, db):
-    categories = db.query(Categories).options(joinedload(Categories.user))
+    categories = db.query(Categories).options(joinedload(Categories.user),
+                                              joinedload(Categories.category_files))
     if search:
         search_formatted = "%{}%".format(search)
-        categories = categories.filter(Categories.name.like(search_formatted) | Categories.comment.like(search_formatted))
-    else:
-        categories = categories.filter(Categories.id > 0)
-    if status:
-        categories = categories.filter(Categories.status == True)
-    elif status is False:
-        categories = categories.filter(Categories.status == False)
-    else:
-        categories = categories
+        categories = categories.filter(Categories.name.like(search_formatted)
+                                       | Categories.comment.like(search_formatted))
+    if status in [True, False]:
+        categories = categories.filter(Categories.status == status)
+
     categories = categories.order_by(Categories.id.desc())
     return pagination(categories, page, limit)
 

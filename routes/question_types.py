@@ -24,15 +24,14 @@ def add_question_type(form: QuestionTypeCreate, db: Session = Depends(database),
 
 @question_types_router.get('/')
 def get_question_types(search: str = None,  id: int = 0,  page: int = 1,
-              limit: int = 25, status: bool = None, db: Session = Depends(database),
+              limit: int = 25, db: Session = Depends(database),
               current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     if id:
         return one_question_type(db, id)
 
-    else:
-        return all_question_types(search=search, page=page, limit=limit, status=status, db=db, )
+    return all_question_types(search=search, page=page, limit=limit, db=db, )
 
 
 @question_types_router.put("/update")

@@ -9,7 +9,7 @@ from database import database
 from schemes.users import UserCurrent
 question_state_options_router = APIRouter(
     prefix="/question_state_options",
-    tags=["Question state operation"]
+    tags=["Question_state_options operation"]
 )
 
 
@@ -36,7 +36,7 @@ def get_question_state_options(search: str = None,  id: int = 0,question_state_i
 
 
 @question_state_options_router.put("/update")
-def category_update(form: QuestionStateOptionUpdate, db: Session = Depends(database),
+def question_state_option_update(form: QuestionStateOptionUpdate, db: Session = Depends(database),
                 current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
