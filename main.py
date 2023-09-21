@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.openapi.models import Info
+from starlette.middleware.cors import CORSMiddleware
+
 from routes import login, users, uploaded_files, categories, questions, question_types, question_states, \
     question_state_answers, question_state_options, diagnostic_options, diagnostics, customers
 
@@ -11,6 +13,14 @@ app = FastAPI(
         version="2.1.0"
     )
 )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 @app.get('/')

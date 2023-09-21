@@ -6,7 +6,7 @@ from utils.pagination import pagination
 from models.categories import Categories
 
 
-def all_categories(search, page, limit, status, db):
+def all_categories(search, source_id,page, limit, status, db):
     categories = db.query(Categories).options(joinedload(Categories.user),
                                               joinedload(Categories.category_files))
     if search:
@@ -15,6 +15,9 @@ def all_categories(search, page, limit, status, db):
                                        | Categories.comment.like(search_formatted))
     if status in [True, False]:
         categories = categories.filter(Categories.status == status)
+
+    if source_id:
+        categories = categories.filter(Categories.source_id == source_id)
 
     categories = categories.order_by(Categories.id.desc())
     return pagination(categories, page, limit)

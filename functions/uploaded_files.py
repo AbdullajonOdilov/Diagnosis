@@ -45,7 +45,7 @@ def create_file(new_files, source, source_id, comment, thisuser, db):
             file_object.write(new_file.file.read())
 
         new_file_db = Uploaded_files(
-            file=new_file.filename,
+            file=file_location,
             source=source,
             source_id=source_id,
             comment=comment,
