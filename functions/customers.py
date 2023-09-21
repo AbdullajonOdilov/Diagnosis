@@ -6,7 +6,6 @@ from models.customers import Customers
 from models.phones import Phones
 from utils.db_operations import the_one
 from utils.pagination import pagination
-from models.users import Users
 
 
 def all_customers(status, search, page, limit, db):

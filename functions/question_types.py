@@ -45,6 +45,6 @@ def update_question_type(form, thisuser, db):
 
 
 def delete_question_type(id, db):
-    the_one(id, Question_types, db)
+    the_one(db, Question_types, id)
     db.query(Question_types).filter(Question_types.id == id).delete()
     db.commit()

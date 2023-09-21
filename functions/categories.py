@@ -6,7 +6,7 @@ from utils.pagination import pagination
 from models.categories import Categories
 
 
-def all_categories(search, source_id,page, limit, status, db):
+def all_categories(search, source_id, page, limit, status, db):
     categories = db.query(Categories).options(joinedload(Categories.user),
                                               joinedload(Categories.category_files))
     if search:
@@ -57,6 +57,6 @@ def update_category(form, thisuser, db):
 
 
 def delete_category(id, db):
-    the_one(id=id, model=Categories, db=db)
+    the_one(db, Categories, id)
     db.query(Categories).filter(Categories.id == id).delete()
     db.commit()
