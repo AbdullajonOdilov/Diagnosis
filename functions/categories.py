@@ -57,6 +57,6 @@ def update_category(form, thisuser, db):
 
 
 def delete_category(id, db):
-    the_one(id, Categories, db)
+    the_one(id=id, model=Categories, db=db)
     db.query(Categories).filter(Categories.id == id).delete()
     db.commit()
