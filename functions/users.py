@@ -102,6 +102,6 @@ def update_user(form, thisuser, db):
 
 
 def delete_user(id, db):
-    the_one(id, Users, db)
+    the_one(db, Users, id)
     db.query(Users).filter(Users.id == id).delete()
     db.commit()

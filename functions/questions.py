@@ -3,7 +3,6 @@ from sqlalchemy.orm import joinedload
 
 from models.categories import Categories
 from models.question_types import Question_types
-from models.users import Users
 from utils.db_operations import save_in_db, the_one
 from utils.pagination import pagination
 from models.questions import Questions

@@ -23,7 +23,7 @@ def add_customer(form: CustomerCreate, db: Session = Depends(database),
 
 
 @customers_router.get('/')
-def get_customers(search: str = None, status: str = None, id: int = 0,  page: int = 1,
+def get_customers(search: str = None, status: bool = None, id: int = 0,  page: int = 1,
                   limit: int = 25, db: Session = Depends(database),
                   current_user: UserCurrent = Depends(get_current_active_user)):
 
