@@ -16,7 +16,7 @@ def all_categories(search, source_id,page, limit, status, db):
     if status in [True, False]:
         categories = categories.filter(Categories.status == status)
 
-    if source_id:
+    if not source_id==None:
         categories = categories.filter(Categories.source_id == source_id)
 
     categories = categories.order_by(Categories.id.desc())

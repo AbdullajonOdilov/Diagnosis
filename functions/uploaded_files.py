@@ -38,9 +38,9 @@ def create_file(new_files, source, source_id, comment, thisuser, db):
 
     for new_file in new_files:
         ext = os.path.splitext(new_file.filename)[-1].lower()
-        if ext not in [".jpg", ".png", ".mp3", ".mp4", ".gif", ".jpeg"]:
+        if ext not in [".jpg", ".png", ".mp3", ".mp4", ".gif", ".jpeg",'.pdf']:
             raise HTTPException(status_code=400, detail="Yuklanayotgan fayl formati mos kelmaydi!")
-        file_location = f"Uploaded_files/{new_file.filename}"
+        file_location = f"uploaded_files/{new_file.filename}"
         with open(file_location, "wb+") as file_object:
             file_object.write(new_file.file.read())
 

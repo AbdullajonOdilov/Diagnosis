@@ -23,7 +23,7 @@ def add_category(form: CategoryCreate, db: Session = Depends(database),
 
 
 @categories_router.get('/')
-def get_categories(search: str = None,  id: int = 0,source_id:int=0,  page: int = 1,
+def get_categories(search: str = None,  id: int = 0,source_id:int=None,  page: int = 1,
                    limit: int = 25, status: bool = None, db: Session = Depends(database),
                    current_user: UserCurrent = Depends(get_current_active_user)):
 
