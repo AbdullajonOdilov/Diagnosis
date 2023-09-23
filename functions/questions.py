@@ -30,6 +30,12 @@ def all_questions(search, category_id, question_type_id, page, limit, db):
 def create_question(form, thisuser, db):
     the_one(db, Categories, form.category_id)
     the_one(db, Question_types, form.question_type_id)
+    existing_question = db.query(Questions).filter(Questions.name == form.name,
+                                                   Questions.category_id == form.category_id).first()
+
+    if existing_question:
+        raise HTTPException(status_code=400, detail="Bu kategoriya uchun bu savol mavjud!")
+
     new_question_db = Questions(
         name=form.name,
         comment=form.comment,
@@ -50,9 +56,14 @@ def one_question(db, id):
 
 
 def update_question(form, thisuser, db):
-    the_one(db=db, model=Questions, id=form.id)
+
+    question = the_one(db=db, model=Questions, id=form.id)
     the_one(db, Categories, form.category_id)
     the_one(db, Question_types, form.question_type_id)
+    question_ver = db.query(Questions).filter(Questions.name == form.name, Questions.category_id == form.category_id).first()
+    if question_ver and question.name != form.name:
+        raise HTTPException(status_code=400, detail=f"Bu nom bazada mavjud")
+
     db.query(Questions).filter(Questions.id == form.id).update({
         Questions.name: form.name,
         Questions.comment: form.comment,

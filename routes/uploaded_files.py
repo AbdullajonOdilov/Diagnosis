@@ -31,7 +31,7 @@ async def upload_files_with_db(
     new_files: List[UploadFile] = File(...),
     source: str = Form(...),
     source_id: int = Form(...),
-    comment: str = Form(...),
+    comment: str = Form(None),
     db: Session = Depends(database),
     current_user: CreateUser = Depends(get_current_active_user)
 ):

@@ -9,9 +9,8 @@ from models.diagnostic_options import Diagnostic_options
 
 
 def all_diagnostic_options(diagnostic_id, question_state_option_id, status, page, limit, db):
-    diagnostic_options = db.query(Diagnostic_options).options(joinedload(Diagnostic_options.user),
-                                                              joinedload(Diagnostic_options.customer),
-                                                              joinedload(Diagnostic_options.category))
+    diagnostic_options = db.query(Diagnostic_options).options(joinedload(Diagnostic_options.diagnostic),
+                                                              joinedload(Diagnostic_options.question_state_option))
 
     if diagnostic_id:
         diagnostic_options = diagnostic_options.filter(Diagnostic_options.diagnostic_id == diagnostic_id)
@@ -27,13 +26,16 @@ def all_diagnostic_options(diagnostic_id, question_state_option_id, status, page
     return pagination(diagnostic_options, page, limit)
 
 
-def create_diagnostic_option(form, thisuser, db):
+def create_diagnostic_option(form,  db):
     the_one(db, Diagnostics, form.diagnostic_id)
     the_one(db, Question_state_options, form.question_state_option_id)
+    if db.query(Diagnostic_options).filter(Diagnostic_options.diagnostic_id == form.diagnostic_id,
+                                           Diagnostic_options.question_state_option_id ==
+                                           form.question_state_option_id).first():
+        raise HTTPException(status_code=400, detail="Bunday ma'lumot bazada mavjud")
     new_diagnostic_option_db = Diagnostic_options(
         diagnostic_id=form.diagnostic_id,
         question_state_option_id=form.question_state_option_id,
-        user_id=thisuser.id,
     )
     save_in_db(db, new_diagnostic_option_db)
 
@@ -48,13 +50,16 @@ def one_diagnostic_option(db, id):
     raise HTTPException(status_code=400, detail="Bunday diagnostic_option mavjud emas")
 
 
-def update_diagnostic_option(form, thisuser, db):
+def update_diagnostic_option(form, db):
     the_one(db=db, model=Diagnostic_options, id=form.id)
     the_one(db, Diagnostics, form.diagnostic_id)
     the_one(db, Question_state_options, form.question_state_option_id)
+    if db.query(Diagnostic_options).filter(Diagnostic_options.diagnostic_id == form.diagnostic_id,
+                                           Diagnostic_options.question_state_option_id ==
+                                           form.question_state_option_id).first():
+        raise HTTPException(status_code=400, detail="Bunday ma'lumot bazada mavjud")
     db.query(Diagnostic_options).filter(Diagnostic_options.id == form.id).update({
         Diagnostic_options.diagnostic_id: form.diagnostic_id,
-        Diagnostic_options.question_state_option_id: form.question_state_option_id,
-        Diagnostic_options.user_id: thisuser.id,
+        Diagnostic_options.question_state_option_id: form.question_state_option_id
     })
     db.commit()

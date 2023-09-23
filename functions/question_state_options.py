@@ -34,6 +34,12 @@ def all_question_state_options(search, question_state_id, question_id, page, lim
 def create_question_state_option(form, thisuser, db):
     the_one(db, Question_states, form.question_state_id)
     the_one(db, Questions, form.question_id)
+
+    qso_ver = db.query(Question_state_options).filter(Question_state_options.question_state_id == form.question_state_id,
+                                                      Question_state_options.question_id == form.question_id,
+                                                      Question_state_options.answer == form.answer).first()
+    if qso_ver:
+        raise HTTPException(status_code=400, detail="Bu javob bu savol uchun allaqachon biriktirilgan")
     new_question_state_db = Question_state_options(
         question_state_id=form.question_state_id,
         answer=form.answer,
@@ -54,9 +60,16 @@ def one_question_state_option(db, id):
 
 
 def update_question_state_option(form, thisuser, db):
-    the_one(db=db, model=Question_state_options, id=form.id)
+    qso = the_one(db=db, model=Question_state_options, id=form.id)
     the_one(db, Question_states, form.question_state_id)
     the_one(db, Questions, form.question_id)
+
+    qso_ver = db.query(Question_state_options).filter(Question_state_options.question_state_id == form.question_state_id,
+                                                      Question_state_options.question_id == form.question_id,
+                                                      Question_state_options.answer == form.answer).first()
+    if qso_ver and qso.answers != form.answer:
+        raise HTTPException(status_code=400, detail="Bu javob bu savol uchun allaqachon biriktirilgan")
+
     db.query(Question_state_options).filter(Question_state_options.id == form.id).update({
         Question_state_options.question_state_id: form.question_state_id,
         Question_state_options.answer: form.answer,

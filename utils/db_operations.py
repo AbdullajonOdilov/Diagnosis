@@ -44,12 +44,12 @@ def the_one_username(db, model, username):
 def the_one_model_name(db, model, name):
     the_one = db.query(model).filter(model.name == name).first()
     if the_one:
-        raise HTTPException(status_code=400, detail=f"Bazada bunday name({name}) mavjud!")
+        raise HTTPException(status_code=400, detail=f"Bazada bunday nome({name}) mavjud!")
     return the_one
 
 
 def the_one_model_number(db, model, number):
     the_one = db.query(model).filter(model.number == number,).first()
     if the_one:
-        raise HTTPException(status_code=400, detail=f"Bazada bunday number({number}) mavjud!")
+        raise HTTPException(status_code=400, detail=f"Bazada bunday telefon no'mer ({number}) mavjud!")
     return the_one

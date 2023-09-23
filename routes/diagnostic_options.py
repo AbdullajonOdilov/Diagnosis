@@ -18,7 +18,7 @@ def add_diagnostic_options(form: DiagnosticOptionCreate, db: Session = Depends(d
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_diagnostic_option(form=form, thisuser=current_user, db=db)
+    create_diagnostic_option(form=form, db=db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 
@@ -41,7 +41,7 @@ def diagnostic_optionsupdate(form: DiagnosticOptionUpdate, db: Session = Depends
                     current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    update_diagnostic_option(form, current_user, db)
+    update_diagnostic_option(form, db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
 

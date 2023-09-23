@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 
-from utils.db_operations import save_in_db, the_one, the_one_username
+from utils.db_operations import save_in_db, the_one, the_one_model_name
 from utils.pagination import pagination
 from models.question_states import Question_states
 
@@ -12,15 +12,13 @@ def all_question_states(search, page, limit,  db):
         search_formatted = "%{}%".format(search)
         question_states = question_states.filter(
             Question_states.name.like(search_formatted) | Question_states.comment.like(search_formatted))
-    else:
-        question_states = question_states.filter(Question_states.id > 0)
    
     question_states = question_states.order_by(Question_states.id.desc())
     return pagination(question_states, page, limit)
 
 
 def create_question_state(form, thisuser,  db):
-
+    the_one_model_name(db, Question_states, form.name)
     new_question_state_db = Question_states(
         name=form.name,
         comment=form.comment,       
@@ -39,7 +37,10 @@ def one_question_state(db, id):
 
 
 def update_question_state(form, thisuser, db):
-    the_one(db=db, model=Question_states, id=form.id)
+    state = the_one(db=db, model=Question_states, id=form.id)
+    state_ver = db.query(Question_states).filter(Question_states.name == form.name).first()
+    if state_ver and state.name != form.name:
+        raise HTTPException(status_code=400, detail=f"Bu nom bazada mavjud")
 
     db.query(Question_states).filter(Question_states.id == form.id).update({
         Question_states.name: form.name,

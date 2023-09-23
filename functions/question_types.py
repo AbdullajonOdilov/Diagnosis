@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 
 from models.question_types import Question_types
-from utils.db_operations import the_one, save_in_db
+from utils.db_operations import the_one, save_in_db, the_one_model_name
 from utils.pagination import pagination
 
 
@@ -18,6 +18,7 @@ def all_question_types(search, page, limit, db):
 
 
 def create_question_type(form, thisuser,  db):
+    the_one_model_name(db, Question_types, form.name)
     new_q_type_db = Question_types(
         name=form.name,
         comment=form.comment,
@@ -35,7 +36,10 @@ def one_question_type(db, ident):
 
 
 def update_question_type(form, thisuser, db):
-    the_one(db=db, model=Question_types, id=form.id)
+    question_type = the_one(db=db, model=Question_types, id=form.id)
+    question_type_ver = db.query(Question_types).filter(Question_types.name == form.name).first()
+    if question_type_ver and question_type_ver.id != question_type.id:
+        raise HTTPException(status_code=400, detail=f"Bu nom bazada mavjud")
     db.query(Question_types).filter(Question_types.id == form.id).update({
         Question_types.name: form.name,
         Question_types.comment: form.comment,

@@ -50,6 +50,6 @@ app.include_router(question_states.question_states_router)
 app.include_router(question_state_options.question_state_options_router)
 app.include_router(question_state_answers.question_state_answers_router)
 
-app.include_router(diagnostic_options.diagnostic_options_router)
 app.include_router(diagnostics.diagnostics_router)
+app.include_router(diagnostic_options.diagnostic_options_router)
 app.include_router(uploaded_files.uploaded_files_router)

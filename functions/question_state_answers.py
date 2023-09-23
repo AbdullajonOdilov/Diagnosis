@@ -14,30 +14,12 @@ def all_question_state_answers(search, question_state_option_id,  page, limit, d
         search_formatted = "%{}%".format(search)
         question_state_answers = question_state_answers.filter(Question_state_answers.answer.like(search_formatted)
                                                                | Question_state_answers.comment.like(search_formatted))
-    else:
-        question_state_answers = question_state_answers.filter(Question_state_answers.id > 0)
-
     if question_state_option_id:
         question_state_answers = question_state_answers.\
             filter(Question_state_answers.question_state_option_id == question_state_option_id)
 
-    else:
-        question_state_answers = question_state_answers
-
     question_state_answers = question_state_answers.order_by(Question_state_answers.id.desc())
     return pagination(question_state_answers, page, limit)
-
-
-def create_question_state_answer(form, thisuser, db):
-    the_one(db, Question_state_options, form.question_state_option_id)
-    new_question_state_db = Question_state_answers(
-        question_state_option_id=form.question_state_option_id,
-        answer=form.answer,
-        comment=form.comment,
-        user_id=thisuser.id,
-    )
-
-    save_in_db(db, new_question_state_db)
 
 
 def one_question_state_answer(db, id):
@@ -49,10 +31,28 @@ def one_question_state_answer(db, id):
     raise HTTPException(status_code=400, detail="Bunday question_state mavjud emas")
 
 
-def update_question_state_answer(form, thisuser, db):
-    the_one(db=db, model=Question_state_answers, id=form.id)
+def create_question_state_answer(form, thisuser, db):
     the_one(db, Question_state_options, form.question_state_option_id)
+    if db.query(Question_state_answers).filter(Question_state_answers.question_state_option_id == form.question_state_option_id,
+                                               Question_state_answers.answer == form.answer).first():
+        raise HTTPException(status_code=400, detail="Bu javob bu holat option uchn mavjud")
+    new_question_state_db = Question_state_answers(
+        question_state_option_id=form.question_state_option_id,
+        answer=form.answer,
+        comment=form.comment,
+        user_id=thisuser.id,
+    )
+    save_in_db(db, new_question_state_db)
 
+
+def update_question_state_answer(form, thisuser, db):
+    qsa = the_one(db=db, model=Question_state_answers, id=form.id)
+    the_one(db, Question_state_options, form.question_state_option_id)
+    qsa_ver = db.query(Question_state_answers).filter(
+            Question_state_answers.question_state_option_id == form.question_state_option_id,
+            Question_state_answers.answer == form.answer).first()
+    if qsa_ver and qsa.answer == form.answer:
+        raise HTTPException(status_code=400, detail="Bu javob bu holat option uchn mavjud")
     db.query(Question_state_answers).filter(Question_state_answers.id == form.id).update({
         Question_state_answers.question_state_option_id: form.question_state_option_id,
         Question_state_answers.answer: form.answer,
