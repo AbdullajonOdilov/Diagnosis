@@ -9,9 +9,9 @@ from models.questions import Questions
 
 
 def all_questions(search, category_id, question_type_id, page, limit, db):
-    questions = db.query(Questions).options(joinedload(Questions.user),
-                                            joinedload(Questions.category).load_only(Categories.name),
-                                            joinedload(Questions.question_type))
+    questions = db.query(Questions).join(Questions.question).options(joinedload(Questions.question),
+        joinedload(Questions.user), joinedload(Questions.category).load_only(Categories.name),
+                                                                            joinedload(Questions.question_type))
     if search:
         search_formatted = "%{}%".format(search)
         questions = questions.filter(
@@ -45,11 +45,13 @@ def create_question(form, thisuser, db):
         user_id=thisuser.id,
     )
     save_in_db(db, new_question_db)
+    return new_question_db.id
 
 
 def one_question(db, id):
-    the_item = db.query(Questions).options(
-        joinedload(Questions.user),joinedload(Questions.category), joinedload(Questions.question_type)).filter(Questions.id == id).first()
+    the_item = db.query(Questions).join(Questions.question).options(joinedload(Questions.question),
+        joinedload(Questions.user), joinedload(Questions.category).load_only(Categories.name),
+        joinedload(Questions.question_type)).filter(Questions.id == id).first()
     if the_item:
         return the_item
     raise HTTPException(status_code=400, detail="Bunday question mavjud emas")

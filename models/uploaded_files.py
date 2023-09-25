@@ -4,6 +4,8 @@ from sqlalchemy.orm import relationship, backref
 
 from database import Base
 from models.categories import Categories
+from models.customers import Customers
+from models.question_states import Question_states
 from models.users import Users
 
 
@@ -25,3 +27,11 @@ class Uploaded_files(Base):
     this_user = relationship('Users', foreign_keys=[source_id],
                              primaryjoin=lambda: and_(Users.id == Uploaded_files.source_id,
                                                       Uploaded_files.source == "user"), backref=backref("user_files"))
+    this_customer = relationship('Customers', foreign_keys=[source_id],
+                             primaryjoin=lambda: and_(Customers.id == Uploaded_files.source_id,
+                                                      Uploaded_files.source == "customer"), backref=backref("customer_files"))
+
+    state_source = relationship('Question_states', foreign_keys=[source_id],
+                                 primaryjoin=lambda: and_(Question_states.id == Uploaded_files.source_id,
+                                                            Uploaded_files.source == "question_state"),
+                                   backref=backref("state_files"))

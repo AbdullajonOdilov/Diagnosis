@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 from models.categories import Categories
 from models.customers import Customers
+from models.question_states import Question_states
 from models.uploaded_files import Uploaded_files
 from models.users import Users
 from utils.db_operations import the_one
@@ -34,7 +35,8 @@ def one_file(ident, db):
 def create_file(new_files, source, source_id, comment, thisuser, db):
     if (source == "category" and db.query(Categories).filter(Categories.id == source_id).first() is None) or \
             (source == "user" and db.query(Users).filter(Users.id == source_id).first() is None) or \
-            (source == "customer" and db.query(Customers).filter(Customers.id == source_id).first() is None):
+            (source == "customer" and db.query(Customers).filter(Customers.id == source_id).first() is None) or \
+            (source == "question_state" and db.query(Question_states).filter(Question_states.id == source_id).first() is None):
         raise HTTPException(status_code=400, detail="source va source_id bir-biriga mos kelmadi!")
     uploaded_file_objects = []
 

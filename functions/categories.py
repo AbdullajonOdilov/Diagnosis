@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 
-from utils.db_operations import save_in_db, the_one, the_one_username
+from utils.db_operations import save_in_db, the_one
 from utils.pagination import pagination
 from models.categories import Categories
 
@@ -24,7 +24,8 @@ def all_categories(search, source_id, page, limit, status, db):
 
 
 def create_category(form, thisuser, db):
-
+    if db.query(Categories).filter(Categories.name == form.name, Categories.source_id == form.source_id).first():
+        raise HTTPException(status_code=400, detail="Bu nom bazada mavjud")
     new_category_db = Categories(
         name=form.name,
         comment=form.comment,
@@ -44,8 +45,10 @@ def one_category(db, id):
 
 
 def update_category(form, thisuser, db):
-    the_one(db=db, model=Categories, id=form.id)
-
+    category = the_one(db=db, model=Categories, id=form.id)
+    category_ver = db.query(Categories).filter(Categories.name == form.name, Categories.source_id == form.source_id).first()
+    if category_ver and category.name != form.name:
+        raise HTTPException(status_code=400, detail="Bu nom bazada mavjud")
     db.query(Categories).filter(Categories.id == form.id).update({
         Categories.name: form.name,
         Categories.comment: form.comment,

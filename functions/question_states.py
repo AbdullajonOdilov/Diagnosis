@@ -7,7 +7,9 @@ from models.question_states import Question_states
 
 
 def all_question_states(search, page, limit,  db):
-    question_states = db.query(Question_states).options(joinedload(Question_states.user))
+    question_states = db.query(Question_states).\
+        options(joinedload(Question_states.user), joinedload(Question_states.state_files))
+
     if search:
         search_formatted = "%{}%".format(search)
         question_states = question_states.filter(
@@ -29,8 +31,8 @@ def create_question_state(form, thisuser,  db):
 
 
 def one_question_state(db, id):
-    the_item = db.query(Question_states).options(
-        joinedload(Question_states.user)).filter(Question_states.id == id).first()
+    the_item = db.query(Question_states).\
+        options(joinedload(Question_states.user), joinedload(Question_states.state_files)).filter(Question_states.id == id).first()
     if the_item:
         return the_item
     raise HTTPException(status_code=400, detail="Bunday question_state mavjud emas")

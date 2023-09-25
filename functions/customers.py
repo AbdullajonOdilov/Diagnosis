@@ -10,6 +10,7 @@ from utils.pagination import pagination
 
 def all_customers(status, search, page, limit, db):
     customers = db.query(Customers).options(joinedload(Customers.customer_phones),
+                                            joinedload(Customers.customer_files),
                                             joinedload(Customers.user))
     if search:
         search_formatted = "%{}%".format(search)
@@ -41,7 +42,8 @@ def create_customer(form, thisuser,  db):
 
 def one_customer(db, ident):
     the_item = db.query(Customers).options(joinedload(Customers.customer_phones),
-        joinedload(Customers.user)).filter(Customers.id == ident).first()
+                                            joinedload(Customers.customer_files),
+                                            joinedload(Customers.user)).filter(Customers.id == ident).first()
     if the_item:
         return the_item
     raise HTTPException(status_code=400, detail="bunday customer mavjud emas")

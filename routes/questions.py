@@ -1,12 +1,12 @@
 import inspect
-from typing import List
+
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from functions.questions import create_question, update_question, all_questions, one_question
 from routes.login import get_current_active_user
 from utils.role_verification import role_verification
-from schemes.questions import QuestionCreate, QuestionUpdate, QuestionData
+from schemes.questions import QuestionCreate, QuestionUpdate
 from database import database
 from schemes.users import UserCurrent
 questions_router = APIRouter(
@@ -20,8 +20,7 @@ def add_question(form: QuestionCreate, db: Session = Depends(database),
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_question(form=form, thisuser=current_user, db=db)
-    raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
+    return create_question(form=form, thisuser=current_user, db=db)
 
 
 @questions_router.get('/')
