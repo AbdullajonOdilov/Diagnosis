@@ -9,17 +9,16 @@ from models.questions import Questions
 
 
 def all_questions(search, category_id, question_type_id, page, limit, db):
-    questions = db.query(Questions).join(Questions.question).options(joinedload(Questions.question),
+    questions = db.query(Questions).options(joinedload(Questions.question),
         joinedload(Questions.user), joinedload(Questions.category).load_only(Categories.name),
-                                                                            joinedload(Questions.question_type))
+        joinedload(Questions.question_type))
+
     if search:
         search_formatted = "%{}%".format(search)
         questions = questions.filter(
             Questions.name.like(search_formatted) | Questions.comment.like(search_formatted))
-    
     if category_id:
         questions = questions.filter(Questions.category_id == category_id)
-
     if category_id:
         questions = questions.filter(Questions.question_type_id == question_type_id)
 

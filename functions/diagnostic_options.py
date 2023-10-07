@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload
 
 from models.diagnostics import Diagnostics
 from models.question_options import Question_options
-from utils.db_operations import save_in_db, the_one
+from utils.db_operations import the_one
 from utils.pagination import pagination
 from models.diagnostic_options import Diagnostic_options
 
@@ -30,7 +30,7 @@ def create_diagnostic_option(question_options_ids, form,  db):
 
     diagnostic_options_data = []
     for q_o in question_options_ids:
-        the_one(db, Question_options, q_o.question_option_id)
+        question_option = the_one(db, Question_options, q_o.question_option_id)
         if db.query(Diagnostic_options).filter(Diagnostic_options.diagnostic_id == form.diagnostic_id,
                                                Diagnostic_options.question_option_id ==
                                                q_o.question_option_id).first():
@@ -38,6 +38,7 @@ def create_diagnostic_option(question_options_ids, form,  db):
         new_diagnostic_option_db = Diagnostic_options(
             diagnostic_id=form.diagnostic_id,
             question_option_id=q_o.question_option_id,
+            question_id=question_option.question_id
         )
         diagnostic_options_data.append(new_diagnostic_option_db)
 

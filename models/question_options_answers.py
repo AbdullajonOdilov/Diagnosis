@@ -1,4 +1,4 @@
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from database import Base
 from sqlalchemy import Column, String, Integer, and_, Text
@@ -23,5 +23,6 @@ class Question_options_answers(Base):
     question_state = relationship("Question_states", foreign_keys=[question_state_id],
                             primaryjoin=lambda: and_(Question_states.id == Question_options_answers.question_state_id))
     question_option = relationship("Question_options", foreign_keys=[question_option_id],
-                            primaryjoin=lambda: and_(Question_options.id == Question_options_answers.question_option_id))
+                            primaryjoin=lambda: and_(Question_options.id == Question_options_answers.question_option_id),
+                                   backref=backref("question_options_answer"))
 

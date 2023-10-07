@@ -13,7 +13,7 @@ class Customers(Base):
     address = Column(String(255), nullable=False)
     comment = Column(String(255), nullable=True)
     user_id = Column(Integer, nullable=False)
-    status = Column(Boolean, nullable=True,default=True)
+    status = Column(Boolean, nullable=True, default=True)
 
     user = relationship('Users', foreign_keys=[user_id],
                         primaryjoin=lambda: and_(Users.id == Customers.user_id))

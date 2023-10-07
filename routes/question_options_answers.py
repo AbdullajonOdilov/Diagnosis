@@ -27,7 +27,7 @@ def add_question_options_answer(form: List[QuestionOptionsAnswerCreate], db: Ses
 
 @question_options_answers_router.get('/')
 def get_question_options_answers(search: str = None,  id: int = 0,  page: int = 1,
-              limit: int = 25, question_state_id: int = 0, question_option_id: int = 0, db: Session = Depends(database),
+              limit: int = 25, question_id: int = 0, question_state_id: int = 0, question_option_id: int = 0, db: Session = Depends(database),
               current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
@@ -35,7 +35,7 @@ def get_question_options_answers(search: str = None,  id: int = 0,  page: int = 
         return one_question_option_answer(db, id)
 
     else:
-        return all_question_options_answers(search, question_state_id, question_option_id, page=page, limit=limit,  db=db)
+        return all_question_options_answers(search, question_id, question_state_id, question_option_id, page=page, limit=limit,  db=db)
 
 
 @question_options_answers_router.put("/update")

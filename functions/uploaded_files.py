@@ -17,10 +17,9 @@ def all_uploaded_files(search, source, page, limit, db):
         uploaded = uploaded.filter(Uploaded_files.source == source)
     if search:
         search_formatted = "%{}%".format(search)
-        search_filter = uploaded.filter(Uploaded_files.comment.like(search_formatted))
-    else:
-        search_filter = Uploaded_files.id > 0
-    uploaded = uploaded.filter(search_filter).order_by(Uploaded_files.id.desc())
+        uploaded = uploaded.filter(Uploaded_files.comment.like(search_formatted))
+
+    uploaded = uploaded.order_by(Uploaded_files.id.desc())
     return pagination(uploaded, page, limit)
 
 

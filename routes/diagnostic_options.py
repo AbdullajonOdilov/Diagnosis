@@ -35,7 +35,7 @@ def get_diagnostic_options(diagnostic_id: int = 0, question_options_id: int = 0,
         return one_diagnostic_option(db, id)
 
     else:
-        return all_diagnostic_options(diagnostic_id=diagnostic_id, question_options_id=question_options_id,
+        return all_diagnostic_options(diagnostic_id=diagnostic_id, question_option_id=question_options_id,
                                       page=page, limit=limit, status=status, db=db, )
 
 

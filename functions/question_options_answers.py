@@ -8,11 +8,14 @@ from utils.pagination import pagination
 from models.question_options_answers import Question_options_answers
 
 
-def all_question_options_answers(search, question_state_id, question_option_id,  page, limit, db):
+def all_question_options_answers(search, question_id, question_state_id, question_option_id,  page, limit, db):
     question_options_answers = db.query(Question_options_answers).join(Question_options_answers.question_option).options(
         joinedload(Question_options_answers.question_state),
-        joinedload(Question_options_answers.question_option).options(subqueryload(Question_options.question_option)))
+        joinedload(Question_options_answers.question_option).options(subqueryload(Question_options.question)))
 
+    if question_id:
+        question_options_answers = question_options_answers.\
+            filter(Question_options.question_id == question_id)
     if search:
         search_formatted = "%{}%".format(search)
         question_options_answers = question_options_answers.filter(Question_options_answers.answer.like(search_formatted)
@@ -32,8 +35,8 @@ def all_question_options_answers(search, question_state_id, question_option_id, 
 def one_question_option_answer(db, id):
     the_item = db.query(Question_options_answers).join(Question_options_answers.question_option).options(
         joinedload(Question_options_answers.question_state),
-        joinedload(Question_options_answers.question_option).options(subqueryload(Question_options.question_option))
-    ).filter(Question_options_answers.id == id).first()
+        joinedload(Question_options_answers.question_option).options(subqueryload(Question_options.question)))\
+        .filter(Question_options_answers.id == id).first()
     if the_item:
         return the_item
     raise HTTPException(status_code=400, detail="Bunday question_state mavjud emas")

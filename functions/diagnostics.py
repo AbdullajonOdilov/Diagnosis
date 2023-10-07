@@ -3,6 +3,10 @@ from sqlalchemy.orm import joinedload
 
 from models.categories import Categories
 from models.customers import Customers
+from models.diagnostic_options import Diagnostic_options
+from models.question_options import Question_options
+from models.question_options_answers import Question_options_answers
+from models.questions import Questions
 from utils.db_operations import save_in_db, the_one
 from utils.pagination import pagination
 from models.diagnostics import Diagnostics
@@ -40,10 +44,26 @@ def create_diagnostics(form, thisuser, db):
 
 
 def one_diagnostics(db, id):
-    the_item = db.query(Diagnostics).options(joinedload(Diagnostics.user),
-                                             joinedload(Diagnostics.customer),
-                                             joinedload(Diagnostics.category)).filter(
-        Diagnostics.id == id).first()
+    the_one(db, Diagnostics, id)
+    the_item = db.query(Diagnostics) \
+        .filter(Diagnostics.id == id) \
+        .options(
+        joinedload(Diagnostics.user),
+        joinedload(Diagnostics.customer),
+        joinedload(Diagnostics.category)
+        .subqueryload(Categories.category_question)
+        .options(
+            joinedload(Questions.question_type),
+            joinedload(Questions.diagnosis_option_question)
+            .subqueryload(Diagnostic_options.question_option)
+            .options(
+                joinedload(Question_options.question_options_answer)
+                .subqueryload(Question_options_answers.question_state)
+            )
+        )
+    ) \
+        .first()
+
     if the_item:
         return the_item
     raise HTTPException(status_code=400, detail="Bunday diagnostics mavjud emas")
@@ -57,6 +77,7 @@ def update_diagnostics(form, thisuser, db):
                                                Diagnostics.customer_id == form.customer_id).first()
     if diagnosis:
         raise HTTPException(status_code=400, detail="Bu mijoz bu categoriyaga biriktirilgan")
+
     db.query(Diagnostics).filter(Diagnostics.id == form.id).update({
         Diagnostics.customer_id: form.customer_id,
         Diagnostics.category_id: form.category_id,         

@@ -17,7 +17,7 @@ class Question_options(Base):
 
     user = relationship('Users', foreign_keys=[user_id],
                         primaryjoin=lambda: and_(Users.id == Question_options.user_id))
-    question_option = relationship("Questions", foreign_keys=[question_id],
+    question = relationship("Questions", foreign_keys=[question_id],
                             primaryjoin=lambda: and_(Questions.id == Question_options.question_id),
                             backref=backref("question"))
 

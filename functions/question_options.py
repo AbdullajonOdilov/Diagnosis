@@ -45,7 +45,7 @@ def create_question_option(answers, form, thisuser, db):
 
 
 def one_question_option(db, id):
-    the_item = db.query(Question_options).options(joinedload(Question_options.question),
+    the_item = db.query(Question_options).options(joinedload(Question_options.question)
                                                         ).filter(Question_options.id == id).first()
     if the_item:
         return the_item
