@@ -16,6 +16,7 @@ class Diagnostics(Base):
     user_id = Column(Integer, nullable=False)
     status = Column(Boolean, nullable=False, default=False)
     date = Column(Date, nullable=False, default=func.now())
+    step = Column(Integer,default=0,nullable=True)
 
     user = relationship('Users', foreign_keys=[user_id],
                         primaryjoin=lambda: and_(Users.id == Diagnostics.user_id))

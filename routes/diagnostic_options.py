@@ -21,8 +21,8 @@ def add_diagnostic_options(question_option_ids: List[QuestionOption], form: Diag
              current_user: UserCurrent = Depends(get_current_active_user)):
 
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_diagnostic_option(question_option_ids, form=form, db=db)
-    raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
+    return create_diagnostic_option(question_option_ids, form=form, db=db)
+
 
 
 @diagnostic_options_router.get('/')

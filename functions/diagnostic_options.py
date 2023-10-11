@@ -1,8 +1,11 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 
+from functions.diagnostics import update_diagnositic_step
+from models.categories import Categories
 from models.diagnostics import Diagnostics
 from models.question_options import Question_options
+from models.questions import Questions
 from utils.db_operations import the_one
 from utils.pagination import pagination
 from models.diagnostic_options import Diagnostic_options
@@ -25,8 +28,8 @@ def all_diagnostic_options(diagnostic_id, question_option_id, status, page, limi
     return pagination(diagnostic_options, page, limit)
 
 
-def create_diagnostic_option(question_options_ids, form,  db):
-    the_one(db, Diagnostics, form.diagnostic_id)
+def create_diagnostic_option(question_options_ids, form, db):
+    diagnostic = the_one(db, Diagnostics, form.diagnostic_id)
 
     diagnostic_options_data = []
     for q_o in question_options_ids:
@@ -41,9 +44,24 @@ def create_diagnostic_option(question_options_ids, form,  db):
             question_id=question_option.question_id
         )
         diagnostic_options_data.append(new_diagnostic_option_db)
+        update_diagnositic_step(id=form.diagnostic_id, question_id=question_option.question_id, db=db)
 
-    db.add_all(diagnostic_options_data)
-    db.commit()
+        db.add_all(diagnostic_options_data)
+        db.commit()
+        new_question_id = int(question_option.question_id)
+        next_question = db.query(Questions).filter(Questions.category_id == diagnostic.category_id,
+                                                   Questions.id > new_question_id).options(joinedload(Questions.question),
+
+                                                joinedload(Questions.category),
+                                                joinedload(Questions.question_type)).first()
+
+        # while not next_question:
+        #     new_question_id = int(question_option.question_id) + 1
+        #     next_question = db.query(Questions).filter(Questions.category_id == diagnostic.category_id,
+        #                                                Questions.id == new_question_id).first()
+        #     print(next_question,'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+        print(next_question,'fffffffffffffffffffffffffffffffffffffffffffffffffff')
+        return next_question
 
 
 def one_diagnostic_option(db, id):

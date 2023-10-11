@@ -58,14 +58,14 @@ def one_diagnostics(db, id):
         joinedload(Diagnostics.user),
         joinedload(Diagnostics.customer),
         joinedload(Diagnostics.category)
-        .subqueryload(Categories.category_question)
-        .options(
+            .subqueryload(Categories.category_question)
+            .options(
             joinedload(Questions.question_type),
             joinedload(Questions.diagnosis_option_question)
-            .subqueryload(Diagnostic_options.question_option)
-            .options(
+                .subqueryload(Diagnostic_options.question_option)
+                .options(
                 joinedload(Question_options.question_options_answer)
-                .subqueryload(Question_options_answers.question_state)
+                    .subqueryload(Question_options_answers.question_state)
             )
         )
     ) \
@@ -107,6 +107,8 @@ def confirm_diagnostic(id, thisuser, db):
     db.commit()
 
 
-
-
-
+def update_diagnositic_step(id, question_id, db):
+    db.query(Diagnostics).filter(Diagnostics.id == id).update({
+        Diagnostics.step: question_id
+    })
+    db.commit()
