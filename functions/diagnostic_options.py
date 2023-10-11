@@ -48,19 +48,20 @@ def create_diagnostic_option(question_options_ids, form, db):
 
         db.add_all(diagnostic_options_data)
         db.commit()
-        new_question_id = int(question_option.question_id)
+        new_question = db.query(Questions).filter(Questions.id == int(question_option.question_id)).first()
         next_question = db.query(Questions).filter(Questions.category_id == diagnostic.category_id,
-                                                   Questions.id > new_question_id).options(joinedload(Questions.question),
+                                                   Questions.step > new_question.step).options(
+            joinedload(Questions.question),
 
-                                                joinedload(Questions.category),
-                                                joinedload(Questions.question_type)).first()
+            joinedload(Questions.category),
+            joinedload(Questions.question_type)).first()
 
         # while not next_question:
         #     new_question_id = int(question_option.question_id) + 1
         #     next_question = db.query(Questions).filter(Questions.category_id == diagnostic.category_id,
         #                                                Questions.id == new_question_id).first()
         #     print(next_question,'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
-        print(next_question,'fffffffffffffffffffffffffffffffffffffffffffffffffff')
+        print(next_question, 'fffffffffffffffffffffffffffffffffffffffffffffffffff')
         return next_question
 
 
