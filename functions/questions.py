@@ -23,7 +23,7 @@ def all_questions(search, category_id, question_type_id, page, limit, db):
     if question_type_id:
         questions = questions.filter(Questions.question_type_id == question_type_id)
 
-    questions = questions.order_by(Questions.id.desc())
+    questions = questions.order_by(Questions.step.asc())
     return pagination(questions, page, limit)
 
 
