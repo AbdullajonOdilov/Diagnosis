@@ -89,7 +89,9 @@ async def login_for_access_token(db: Session = Depends(database), form_data: OAu
         Users.token: access_token
     })
     db.commit()
-    return {'id': user.id, "access_token": access_token, "token_type": "bearer", "role": user.role}
+    return {'id': user.id, "access_token": access_token, "token_type":
+            "bearer", "role": user.role,
+            "name": user.name}
 
 
 def token_has_expired(token: str) -> bool:

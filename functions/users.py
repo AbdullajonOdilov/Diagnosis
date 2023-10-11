@@ -34,9 +34,9 @@ def one_user(db, id):
 
 def create_user(form, db, thisuser):
     the_one_username(db=db, model=Users, username=form.username)
-    if thisuser.role not in ['admin', 'super_admin']:
+    if thisuser.role not in ['admin', 'user']:
         raise HTTPException(status_code=400, detail="Sizga ruhsat berilmagan")
-    if form.role not in ['admin', 'super_admin']:
+    if form.role not in ['admin', 'user']:
         raise HTTPException(status_code=400, detail="Role error")
     new_user_db = Users(
         name=form.name,
@@ -57,7 +57,7 @@ def create_user(form, db, thisuser):
 
 def update_user(form, thisuser, db):
     user = the_one(db=db, model=Users, id=form.id)
-    if form.role not in ['admin', 'super_user']:
+    if form.role not in ['admin', 'user']:
         raise HTTPException(status_code=400, detail="Role error")
     if db.query(Users).filter(Users.username == form.username).first() and user.username != form.username:
         raise HTTPException(status_code=400, detail="Bu username bazada mavjud")
@@ -84,7 +84,6 @@ def update_user(form, thisuser, db):
             Users.name: form.name,
             Users.username: form.username,
             Users.password_hash: get_password_hash(form.password_hash),
-            Users.salary: form.salary,
             Users.status: form.status,
             Users.role: form.role,
         })
@@ -100,8 +99,3 @@ def update_user(form, thisuser, db):
                          db=db, commit=False)
         db.commit()
 
-
-def delete_user(id, db):
-    the_one(db, Users, id)
-    db.query(Users).filter(Users.id == id).delete()
-    db.commit()

@@ -1,7 +1,7 @@
 import inspect
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from functions.users import create_user, update_user, all_users, one_user, delete_user
+from functions.users import create_user, update_user, all_users, one_user
 from routes.login import get_current_active_user
 from utils.role_verification import role_verification
 from schemes.users import CreateUser, UpdateUser
@@ -42,11 +42,3 @@ def user_update(form: UpdateUser, db: Session = Depends(database),
     update_user(form, current_user, db)
     raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")
 
-
-@users_router.delete("/delete/{id}")
-def user_delete(id: int = 0, db: Session = Depends(database),
-                current_user: UserCurrent = Depends(get_current_active_user)):
-
-    role_verification(current_user, inspect.currentframe().f_code.co_name)
-    delete_user(id, db)
-    raise HTTPException(status_code=200, detail="Amaliyot muvaffaqiyatli amalga oshirildi")

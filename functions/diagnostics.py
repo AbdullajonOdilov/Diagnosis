@@ -1,3 +1,5 @@
+import datetime
+
 from fastapi import HTTPException
 from sqlalchemy.orm import joinedload
 
@@ -32,15 +34,20 @@ def create_diagnostics(form, thisuser, db):
     the_one(db, Customers, form.customer_id)
     the_one(db, Categories, form.category_id)
     diagnosis = db.query(Diagnostics).filter(Diagnostics.category_id == form.category_id,
-                                               Diagnostics.customer_id == form.customer_id).first()
+                                             Diagnostics.customer_id == form.customer_id).first()
     if diagnosis:
         raise HTTPException(status_code=400, detail="Bu mijoz bu categoriyaga biriktirilgan")
     new_diagnostics_db = Diagnostics(
         customer_id=form.customer_id,
-        category_id=form.category_id,         
+        category_id=form.category_id,
+        date=datetime.date.today(),
+        status=False,
         user_id=thisuser.id,
     )
     save_in_db(db, new_diagnostics_db)
+
+    return {"customer_id": form.customer_id, "category_id": form.category_id,
+            "status": False}
 
 
 def one_diagnostics(db, id):
@@ -70,17 +77,36 @@ def one_diagnostics(db, id):
 
 
 def update_diagnostics(form, thisuser, db):
-    the_one(db=db, model=Diagnostics, id=form.id)
+    diagnos = the_one(db=db, model=Diagnostics, id=form.id)
     the_one(db, Customers, form.customer_id)
     the_one(db, Categories, form.category_id)
     diagnosis = db.query(Diagnostics).filter(Diagnostics.category_id == form.category_id,
-                                               Diagnostics.customer_id == form.customer_id).first()
-    if diagnosis:
+                                             Diagnostics.customer_id == form.customer_id).first()
+
+    if diagnosis and diagnos.category_id != form.category_id:
         raise HTTPException(status_code=400, detail="Bu mijoz bu categoriyaga biriktirilgan")
+
+    if diagnos.status == True:
+        raise HTTPException(status_code=400, detail="Bu diagnos tugagan")
 
     db.query(Diagnostics).filter(Diagnostics.id == form.id).update({
         Diagnostics.customer_id: form.customer_id,
-        Diagnostics.category_id: form.category_id,         
+        Diagnostics.category_id: form.category_id,
+        Diagnostics.date: datetime.date.today(),
         Diagnostics.user_id: thisuser.id,
     })
     db.commit()
+
+
+def confirm_diagnostic(id, thisuser, db):
+    the_one(db=db, model=Diagnostics, id=id)
+    db.query(Diagnostics).filter(Diagnostics.id == id).update({
+        Diagnostics.status: True,
+        Diagnostics.user_id: thisuser.id,
+    })
+    db.commit()
+
+
+
+
+

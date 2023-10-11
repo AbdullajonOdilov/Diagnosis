@@ -10,7 +10,8 @@ from models.questions import Questions
 
 def all_questions(search, category_id, question_type_id, page, limit, db):
     questions = db.query(Questions).options(joinedload(Questions.question),
-        joinedload(Questions.user), joinedload(Questions.category).load_only(Categories.name),
+        joinedload(Questions.user), joinedload(Questions.diagnosis_option_question),
+        joinedload(Questions.category).load_only(Categories.name),
         joinedload(Questions.question_type))
 
     if search:
@@ -19,7 +20,7 @@ def all_questions(search, category_id, question_type_id, page, limit, db):
             Questions.name.like(search_formatted) | Questions.comment.like(search_formatted))
     if category_id:
         questions = questions.filter(Questions.category_id == category_id)
-    if category_id:
+    if question_type_id:
         questions = questions.filter(Questions.question_type_id == question_type_id)
 
     questions = questions.order_by(Questions.id.desc())
@@ -49,7 +50,8 @@ def create_question(form, thisuser, db):
 
 def one_question(db, id):
     the_item = db.query(Questions).join(Questions.question).options(joinedload(Questions.question),
-        joinedload(Questions.user), joinedload(Questions.category).load_only(Categories.name),
+        joinedload(Questions.user), joinedload(Questions.diagnosis_option_question),
+        joinedload(Questions.category).load_only(Categories.name),
         joinedload(Questions.question_type)).filter(Questions.id == id).first()
     if the_item:
         return the_item
@@ -57,7 +59,6 @@ def one_question(db, id):
 
 
 def update_question(form, thisuser, db):
-
     question = the_one(db=db, model=Questions, id=form.id)
     the_one(db, Categories, form.category_id)
     the_one(db, Question_types, form.question_type_id)

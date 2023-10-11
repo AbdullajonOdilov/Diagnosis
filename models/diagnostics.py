@@ -14,8 +14,8 @@ class Diagnostics(Base):
     customer_id = Column(Integer, nullable=False)
     category_id = Column(Integer, nullable=False)
     user_id = Column(Integer, nullable=False)
-    status = Column(Boolean,nullable=False,default=True)
-    date = Column(Date,nullable=False,default=func.now())
+    status = Column(Boolean, nullable=False, default=False)
+    date = Column(Date, nullable=False, default=func.now())
 
     user = relationship('Users', foreign_keys=[user_id],
                         primaryjoin=lambda: and_(Users.id == Diagnostics.user_id))

@@ -60,11 +60,11 @@ def update_diagnostic_option(form, db):
     the_one(db, Diagnostics, form.diagnostic_id)
     the_one(db, Question_options, form.question_options_id)
     if db.query(Diagnostic_options).filter(Diagnostic_options.diagnostic_id == form.diagnostic_id,
-                                           Diagnostic_options.question_options_id ==
+                                           Diagnostic_options.question_option_id ==
                                            form.question_options_id).first():
         raise HTTPException(status_code=400, detail="Bunday ma'lumot bazada mavjud")
     db.query(Diagnostic_options).filter(Diagnostic_options.id == form.id).update({
         Diagnostic_options.diagnostic_id: form.diagnostic_id,
-        Diagnostic_options.question_options_id: form.question_options_id
+        Diagnostic_options.question_option_id: form.question_options_id
     })
     db.commit()
