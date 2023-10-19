@@ -8,7 +8,8 @@ from models.question_options import Question_options
 
 
 def all_question_options(search, question_id, page, limit, db):
-    question_options = db.query(Question_options).options(joinedload(Question_options.question))
+    question_options = db.query(Question_options).options(joinedload(Question_options.question),
+                                                          joinedload(Question_options.question_options_answer))
 
     if search:
         search_formatted = "%{}%".format(search)

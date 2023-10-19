@@ -20,9 +20,9 @@ class Diagnostic_options(Base):
 
     question_option = relationship("Question_options", foreign_keys=[question_option_id],
                                          primaryjoin=lambda: and_(Question_options.id ==
-                                                                  Diagnostic_options.question_option_id))
+                                                                  Diagnostic_options.question_option_id),
+                                   backref=backref("question_option_get"))
     question = relationship("Questions", foreign_keys=[question_id],
-                            primaryjoin=lambda: and_(Questions.id ==
-                                                                  Diagnostic_options.question_id),
+                            primaryjoin=lambda: and_(Questions.id == Diagnostic_options.question_id),
                             backref=backref("diagnosis_option_question"))
 

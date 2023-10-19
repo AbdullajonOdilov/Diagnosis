@@ -1,7 +1,8 @@
 from fastapi import HTTPException
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, subqueryload
 
 from models.categories import Categories
+from models.question_options import Question_options
 from models.question_types import Question_types
 from utils.db_operations import save_in_db, the_one
 from utils.pagination import pagination
@@ -9,7 +10,9 @@ from models.questions import Questions
 
 
 def all_questions(search, category_id, question_type_id, page, limit, db):
-    questions = db.query(Questions).options(joinedload(Questions.question),
+    questions = db.query(Questions).join(Question_options.question_options_answer).options(
+        joinedload(Questions.question).subqueryload(
+        Question_options.question_options_answer),
         joinedload(Questions.user), joinedload(Questions.diagnosis_option_question),
         joinedload(Questions.category).load_only(Categories.name),
         joinedload(Questions.question_type))
